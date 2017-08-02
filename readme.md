@@ -1,2 +1,2 @@
 ## Iris in Motion
-A webGL playground for cats.
+A dump ground of my webGL creations. Behold, "I wasn’t meant for reality, but life came and found me.”
