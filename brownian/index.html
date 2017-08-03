@@ -1,37 +1,62 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
-  <title>JS Bin</title>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width'>
+  <title>Brownian~Goo~</title>
   <style media="screen">
-    html, body {
-      width: 100%;
-      height: 100%;
-      margin: 0;
+    #container {
+      height: 600px;
+      width: 600px;
+      position: absolute;
+      margin: auto;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+    .cell {
+      border: none;
+      box-sizing: border-box;
+      height: 200px;
+      vertical-align: bottom;
+      width: 200px;
+    }
+    button {
+      background: #f1c40f;
+      border: none;
+      color: white;
+      display: block;
+      font-size: 25px;
+      height: 40px;
+      margin: 20px auto;
+    }
+    button:hover {
+      background: #f39c12;
+    }
+    button:active {
+      background: #e67e22;
     }
   </style>
 
-  <script id="shader-vs" type="x-shader/x-vertex">
-  attribute vec4 coords;
-  attribute float pointSize;
-  void main(void) {
-    gl_Position = coords;
-    gl_PointSize = pointSize;
-  }
-  </script>
-
-  <script id="shader-fs" type="x-shader/x-fragment">
-  precision mediump float;
-  uniform vec4 color;
-  void main(void) {
-    gl_FragColor = color;
-  }
-  </script>
-
 </head>
 <body>
-  <canvas id="canvas"></canvas>
-  <script src="main.js"></script>
+  <div id='container'  width='600px' height='600px'>
+    <div id="frames">
+
+    </div>
+    <button id="reload-button">Drink me!</button>
+  </div>
+  <script>
+    var numberOfIframes = 9;
+    var container = document.getElementById('frames');
+    var iframe;
+    for (var i = 0; i < numberOfIframes; i++) {
+      iframe = document.createElement('iframe');
+      iframe.className = 'cell';
+      iframe.src = 'frame.html';
+      container.insertBefore(iframe, null);
+    }
+  </script>
 </body>
 </html>

@@ -1,21 +1,43 @@
+function getRandomRange(min, max) {
+  return Math.random() * (max - min) + min;
+};
+
+function getRandomRangeInt(min, max) {
+  return Math.floor(getRandomRange(min, max));
+};
+
+function getRandomColors() {
+  var colors = [1, 1, 1, 1];
+  colors = colors.map(function(c) {
+    return getRandomRange(0, 1).toFixed(4);
+  });
+  return colors;
+}
+
 var gl,
     shaderProgram,
     vertices,
-    vertexCount = 5000;
+    vertexCount = getRandomRangeInt(20, 500);
 
 initGL();
 createShaders();
 createVertices();
 draw();
 
+var reloadButton = top.document.getElementById('reload-button');
+reloadButton.addEventListener('click', function(e) {
+  initGL();
+});
+
 function initGL() {
   var canvas = document.getElementById("canvas");
-  console.log(canvas);
   gl = canvas.getContext("webgl");
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
   gl.viewport(0, 0, canvas.width, canvas.height);
-  gl.clearColor(1, 1, 1, 1);
+  var colors = getRandomColors();
+  colors[colors.length - 1] += 0.3;
+  gl.clearColor.apply(gl, colors);
 }
 
 function createShaders() {
@@ -32,8 +54,8 @@ function createShaders() {
 function createVertices() {
   vertices = [];
   for(var i = 0; i < vertexCount; i++) {
-    vertices.push(Math.random() * 2 - 1);
-    vertices.push(Math.random() * 2 - 1);
+    vertices.push(getRandomRange(-1, 1));
+    vertices.push(getRandomRange(-1, 1));
   }
 
   var buffer = gl.createBuffer();
@@ -41,22 +63,23 @@ function createVertices() {
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.DYNAMIC_DRAW);
 
   var coords = gl.getAttribLocation(shaderProgram, "coords");
-//   gl.vertexAttrib3f(coords, 0.5, 0.5, 0);
   gl.vertexAttribPointer(coords, 2, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(coords);
-//   gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
   var pointSize = gl.getAttribLocation(shaderProgram, "pointSize");
-  gl.vertexAttrib1f(pointSize, 1);
+  gl.vertexAttrib1f(pointSize, getRandomRangeInt(1, 8));
 
   var color = gl.getUniformLocation(shaderProgram, "color");
-  gl.uniform4f(color, 0, 0, 0, 1);
+  var colors = getRandomColors();
+  colors[colors.length - 1] = 1;
+  colors.unshift(color);
+  gl.uniform4f.apply(gl, colors);
 }
 
 function draw() {
   for(var i = 0; i < vertexCount * 2; i += 2) {
-    vertices[i] += Math.random() * 0.01 - 0.005;
-    vertices[i + 1] += Math.random() * 0.01 - 0.005;
+    vertices[i] += getRandomRange(-0.02, 0.02);
+    vertices[i + 1] += getRandomRange(-0.02, 0.02);
   }
   gl.bufferSubData(gl.ARRAY_BUFFER, 0, new Float32Array(vertices));
   gl.clear(gl.COLOR_BUFFER_BIT);
