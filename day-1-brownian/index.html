@@ -57,6 +57,10 @@
       iframe.src = 'frame.html';
       container.insertBefore(iframe, null);
     }
+    var button = document.getElementById('reload-button');
+    setInterval(function() {
+      button.click();
+    }, 1000);
   </script>
 </body>
 </html>

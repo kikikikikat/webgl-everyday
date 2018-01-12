@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Cathedral</title>
+
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.3.2/gl-matrix-min.js"></script>
+
+  <script id="shader-vs" type="x-shader/x-vertex">
+  attribute vec4 coords;
+  attribute float pointSize;
+  uniform mat4 transformMatrix;
+  attribute vec4 colors;
+  varying vec4 varyingColors;
+  uniform mat4 perspectiveMatrix;
+  void main(void) {
+    gl_Position = perspectiveMatrix * transformMatrix  * coords;
+    gl_PointSize = pointSize;
+    varyingColors = colors;
+  }
+  </script>
+
+  <script id="shader-fs" type="x-shader/x-fragment">
+  precision mediump float;
+  uniform vec4 color;
+  varying vec4 varyingColors;
+  void main(void) {
+    gl_FragColor = varyingColors;
+  }
+  </script>
+
+</head>
+<body>
+  <canvas id="canvas" width="600" height="600"></canvas>
+  <script src="main.js"></script>
+</body>
+</html>
