@@ -1,0 +1,144 @@
+<!-- Licensed under a BSD license. See license.html for license -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>WebGL - Fundamentals</title>
+  </head>
+  <body>
+    <canvas id="c" width="400" height="400"></canvas>
+  </body>
+</html>
+
+<script>
+"use strict";
+
+var vertexShaderSource = `
+  attribute vec4 a_position;
+  attribute vec4 a_color;
+  varying vec4 v_color;
+  void main() {
+    gl_Position = a_position;
+    v_color = a_color;
+  }
+`;
+
+var fragmentShaderSource = `
+  precision mediump float;
+  varying vec4 v_color;
+  void main() {
+    gl_FragColor = v_color; 
+  }
+`;
+
+function createShader(gl, type, source) {
+  var shader = gl.createShader(type);
+  gl.shaderSource(shader, source);
+  gl.compileShader(shader);
+  var success = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
+  if (success) {
+    return shader;
+  }
+
+  console.log(gl.getShaderInfoLog(shader));
+  gl.deleteShader(shader);
+}
+
+function createProgram(gl, vertexShader, fragmentShader) {
+  var program = gl.createProgram();
+  gl.attachShader(program, vertexShader);
+  gl.attachShader(program, fragmentShader);
+  gl.linkProgram(program);
+  var success = gl.getProgramParameter(program, gl.LINK_STATUS);
+  if (success) {
+    return program;
+  }
+
+  console.log(gl.getProgramInfoLog(program));
+  gl.deleteProgram(program);
+}
+
+function initBuffer(gl, program) {
+  var vertexBuffer = gl.createBuffer(),
+      vertices = [],
+      vertCount = 2;
+  // Tweaking i and delta in incrementing j to make slices
+  // thinner or fatter
+  for (var i = 0.0; i <= 360; i+=0.2) {
+    var j = i * Math.PI / 180;
+    var vert1 = [
+      Math.sin(j),
+      Math.cos(j),
+    ];
+    var vert2 = [
+      0,
+      0
+    ];
+    // Potentially vert3 is unnecessary if we use gl.TRIANGLE_STRIP
+    var vert3 = [
+      Math.sin(j + 0.01),
+      Math.cos(j + 0.01)
+    ];
+    vertices = vertices.concat(vert1);
+    vertices = vertices.concat(vert2);
+    vertices = vertices.concat(vert3);
+  }
+  var n = vertices.length / vertCount;
+  gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+  var positionAttributeLocation = gl.getAttribLocation(program, 'a_position');
+  gl.enableVertexAttribArray(positionAttributeLocation);
+  gl.vertexAttribPointer(positionAttributeLocation, vertCount, gl.FLOAT, false, 0, 0);
+  return n;
+}
+
+function main() {
+  var canvas = document.getElementById("c");
+  var gl = canvas.getContext("webgl");
+  if (!gl) {
+    return;
+  }
+
+  var vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
+  var fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
+
+  var program = createProgram(gl, vertexShader, fragmentShader);
+
+  gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+
+  gl.clearColor(0, 0, 0, 0);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+
+
+  gl.useProgram(program);
+
+  var n = initBuffer(gl, program);
+
+  var colorLocation = gl.getAttribLocation(program, "a_color");
+  var colorBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+  var colorsForTriangle = [];
+  for (var i = 0; i < n/3; ++i) {
+    var r = Math.random();
+    var g = Math.random();
+    var b = Math.random();
+    var alpha = 1;
+    colorsForTriangle = colorsForTriangle.concat([
+      r, g, b, alpha,
+      r, g, b, alpha,
+      r, g, b, alpha
+    ]);
+  };
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colorsForTriangle), gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(colorLocation);
+  gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+  gl.vertexAttribPointer(colorLocation, 4, gl.FLOAT, false, 0, 0);
+  
+  gl.drawArrays(gl.TRIANGLES, 0, n);
+  
+}
+
+main();
+</script>
+
