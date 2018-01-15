@@ -1,0 +1,25 @@
+{
+  "name": "day-5-geo-arcs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kat Zhang",
+  "license": "ISC",
+  "browserify": {
+    "transform": [
+      "glslify"
+    ]
+  },
+  "dependencies": {
+    "geo-arc": "^1.1.2",
+    "gl-geometry": "^1.0.3",
+    "gl-matrix": "^2.1.0",
+    "gl-now": "^1.4.0",
+    "gl-shader": "^4.0.1",
+    "glslify": "^2.0.0",
+    "mesh-combine": "^1.1.0"
+  }
+}
