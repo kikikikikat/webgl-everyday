@@ -28,9 +28,10 @@ float movingLine(vec2 uv, vec2 center, float radius) {
   vec2 d = uv - center;
   float r = length(uv - center);
   if (r < radius) {
+    // Get the point on the circle in a given time
     vec2 p = radius * vec2(cos(theta0 * PI / 180.0), -sin(theta0*PI / 180.0));
-    // what is it doing here
-    float l = length(d - p*clamp(dot(d, p) / dot(p, p), 0.0, 1.0));
+    // Calculate current point's distance to that circle point
+    float l = length(d - p*abs(dot(d, p) / dot(p, p)));
     // Compute gradient
     float theta = mod(180.0*atan(d.y,d.x)/PI+theta0, 360.0);
     float gradient = clamp(theta/60.0, 0.0, 1.0);
