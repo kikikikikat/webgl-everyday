@@ -8,7 +8,7 @@ var drawCount;
 var x = -12.1;
 var y = -22;
 var z = 0;
-var thomas_b = 0.1998;
+var thomas_b = 0.208186;
 
 var dt, dx, dy, dz;
 
