@@ -99,7 +99,10 @@ function animate() {
 		updatePositions();
 		line.geometry.attributes.position.needsUpdate = true; // required after the first render
 		line.material.color.setHSL(Math.random(), 1, 0.5);
-	}
+	};
+	var time = Date.now() * 0.001;
+	line.rotation.x = time * 0.2;
+	line.rotation.y = time * 0.4;
 	controls.update();
 	render();
 
