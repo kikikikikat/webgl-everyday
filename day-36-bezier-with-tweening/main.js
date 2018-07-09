@@ -36,9 +36,9 @@ function getCurve(pts, color) {
   var points = curve.getPoints( 500 );
   var geometry = new THREE.BufferGeometry().setFromPoints( points );
   
-  var material = new THREE.LineBasicMaterial( { color : (color || 0x000000), opacity: 1.0, transparent: true } );
+  var material = new THREE.LineBasicMaterial( { color : (color || 0x000000), opacity: 0.8, transparent: true } );
   var mesh = new THREE.Line( geometry, material );
-  var tween = new TWEEN.Tween(mesh.material).to({ opacity: 0.0 },100).start();
+  var tween = new TWEEN.Tween(mesh.material).to({ opacity: 0.0 },1000).start();
   return mesh;
 }
 
@@ -46,12 +46,20 @@ function drawCurve(angle) {
   x1 = 0 + Math.sin(angle) * 500;
   x2 = 0 - Math.cos(angle) * 500;
 
+  var r = 100 + Math.floor((Math.sin(angle) + 1) / 2 * 155);
+  var g = 100 + Math.floor((Math.cos(angle) + 1) / 2 * 155);
+  var b = 0;
+
+  
+
+  var color = 'rgb(' + [r, g, b].join(',') + ')';
+
   var curveLeft = getCurve([
     [x0, y0],
     [x1, y1],
     [x2, y2],
     [x3, y3]
-  ]);
+  ], color);
 
   x1 = 0 - Math.sin(angle) * 500;
   x2 = 0 + Math.cos(angle) * 500;
@@ -61,7 +69,7 @@ function drawCurve(angle) {
     [x1, y1],
     [x2, y2],
     [x3, y3]
-  ]);
+  ], color);
 
   scene.add(curveLeft);
   scene.add(curveRight);
